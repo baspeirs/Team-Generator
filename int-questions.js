@@ -2,22 +2,22 @@ const internQuestions = [
     {
         type: "input",
         message: "What is your intern's name?",
-        name: "internName"
+        name: "name"
     },
     {
         type: "input",
         message: "What is your intern's ID?",
-        name: "internID"
+        name: "id"
     },
     {
         type: "input",
         message: "What is your intern's email?",
-        name: "internEmail"
+        name: "email"
     },
     {
         type: "input",
         message: "What is your inter's school?",
-        name: "internSchool"
+        name: "school"
     },
     {
         type: "list",

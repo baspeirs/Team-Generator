@@ -2,22 +2,22 @@ const engineerQuestions = [
     {
         type: "input",
         message: "What is your engineer's name?",
-        name: "engineerName"
+        name: "name"
     },
     {
         type: "input",
         message: "What is your engineer's ID?",
-        name: "engineerID"
+        name: "id"
     },
     {
         type: "input",
         message: "What is your engineer's email?",
-        name: "engineerEmail"
+        name: "email"
     },
     {
         type: "input",
         message: "What is your engineer's GitHub username?",
-        name: "engineerGitHub"
+        name: "github"
     },
     {
         type: "list",

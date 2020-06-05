@@ -8,89 +8,75 @@ const mangagerQuestions = require("./managerQuestions");
 const engQuestions = require("./eng-questions");
 const intQuestions = require("./int-questions");
 const util = require("util")
-
+// used to write to a file later in the program
 const asyncWriteFile = util.promisify(fs.writeFile)
-
+// set the path for the file we will write to
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-
+// renders the object info to html format
 const render = require("./htmlRenderer");
 
 // empty array to push employee id numbers
 let employeeIdArray = [];
+// empty arry to push employee objects
 let employees = [];
-// let managerArray = [];
-// let engineerArray = [];
-// let internArray = [];
+// blank variables to store response and new employee information
+let response;
+let addEmployee;
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-async function engineerInfo() {
+
+// function for asking engineer questions and pushing objects to the employee array
+
+async function employeeInfo(arr) {
     try {
-        const response = await inquirer.prompt(engQuestions)
-        const engineer = new Engineer(response.engineerName, response.engineerID, response.engineerEmail, response.engineerGitHub);
-        employees.push(engineer)
-        if (response.addEmployee === "Engineer") {
-            engineerInfo()
-        }
-        else if (response.addEmployee === "Intern") {
-            internInfo()
+        const { name, id, email } = response
+        if (response.number) {
+            const manager = new Manager(name, id, email, response.number);
+            employees.push(manager)
+        } 
+        else if (response.github) {
+            const engineer = new Engineer(name, id, email, response.github);
+            employees.push(engineer);
         }
         else {
-            renderHtml()
+            const intern = new Intern(name, id, email, response.school);
+            employees.push(intern);
         }
+        employeeIdArray.push(id);
+        makeEmployee();
     }
     catch(err) {
         console.log(err)
     }
 }
-async function internInfo() {
+
+async function makeEmployee() {
+    // takes in response and tests the type of employee you would like to make 
     try {
-        const response = await inquirer.prompt(intQuestions)
-        const intern = new Intern(response.internName, response.internID, response.internEmail, response.internSchool);
-        employees.push(intern)
-        if (response.addEmployee === "Engineer") {
-            engineerInfo()
+        if (!addEmployee) {
+            response = await inquirer.prompt(mangagerQuestions);
+            addEmployee = response.addEmployee
+        }
+        else if (addEmployee === "Engineer") {
+            response = await inquirer.prompt(engQuestions)
+            addEmployee = response.addEmployee
         }
         else if (response.addEmployee === "Intern") {
-            internInfo()
+            response = await inquirer.prompt(intQuestions);
+            addEmployee = response.addEmployee
         }
         else {
-            renderHtml()
+            const newHtml = await render(employees);
+            await asyncWriteFile(outputPath, newHtml)
+            return;
         }
+        employeeInfo();
     }
     catch(err) {
         console.log(err)
     }
 }
 
-async function renderHtml() {
-    try {
-        const newHtml = await render(employees);
-        await asyncWriteFile(outputPath, newHtml)
-    }
-    catch(err) {
-        console.log(err)
-    }
-}
-
-async function askQuestions() {
-    try {
-        const response = await inquirer.prompt(mangagerQuestions)
-        // const { managerName, managerID,  }
-        employeeIdArray.push(response.managerID)
-        const manager = new Manager(response.managerName, response.managerID, response.managerEmail, response.managerNumber);
-        employees.push(manager)
-    if (response.addEmployee === "Engineer") {
-        engineerInfo()
-    }
-    else if (response.addEmployee === "Intern") {
-        internInfo()
-    }
-    }
-    catch(err) {
-        console.log(err)
-    }
-} 
-
-askQuestions()
+makeEmployee();
