@@ -24,11 +24,7 @@ let employees = [];
 let response;
 let addEmployee;
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-// function for asking engineer questions and pushing objects to the employee array
-
+// function to take in an object created from inquirer and apply the data to classes
 async function employeeInfo(arr) {
     try {
         const { name, id, email } = response
@@ -51,9 +47,8 @@ async function employeeInfo(arr) {
         console.log(err)
     }
 }
-
-async function makeEmployee() {
-    // takes in response and tests the type of employee you would like to make 
+// function to ask questions and save the answers to a response variable, then update the addEmployee variable based on the users choise
+async function makeEmployee() { 
     try {
         if (!addEmployee) {
             response = await inquirer.prompt(mangagerQuestions);
